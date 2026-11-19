@@ -1,0 +1,25 @@
+{
+  "name": "小红书运营助手",
+  "appid": "",
+  "description": "小红书笔记运营平台",
+  "versionName": "0.1.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "app-plus": {
+    "usingComponents": true,
+    "splashscreen": { "alwaysShowBeforeRender": true, "autoclose": true },
+    "distribute": {
+      "android": { "permissions": ["<uses-permission android:name=\"android.permission.INTERNET\"/>"] },
+      "ios": {}
+    }
+  },
+  "h5": {
+    "title": "小红书运营助手",
+    "router": { "mode": "hash" },
+    "devServer": {
+      "port": 5173,
+      "proxy": { "/api": { "target": "http://127.0.0.1:8000", "changeOrigin": true } }
+    }
+  },
+  "vueVersion": "3"
+}

@@ -1,0 +1,10 @@
+# 本地数据与缓存
+data/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+
+# 临时文案草稿
+/tmp/
