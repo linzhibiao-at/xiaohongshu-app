@@ -3,7 +3,6 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { computed, nextTick, reactive, ref } from 'vue'
 
 import { api, mdToHtml, requireLogin, streamChat } from '../../api'
-import VoicePad from '../../components/VoicePad.vue'
 
 const OPENING =
   '你好，我是你的小红书起号专家。先聊聊：你想做哪个赛道、账号现在什么情况、多久想达到什么目标？信息越具体，方案越落地。'
@@ -18,7 +17,6 @@ const llmOn = ref(true)
 const accounts = ref([])
 const pickedIdx = ref(0)
 const anchor = ref('')
-const inputMode = ref('text') // text | voice, like WeChat's keyboard/mic toggle
 
 const templateForm = reactive({ niche: '', goal: '' })
 const templateBusy = ref(false)
@@ -182,12 +180,6 @@ onUnload(() => {
   timers.forEach((t) => clearTimeout(t))
   timers = []
 })
-
-// Speak -> transcript -> send: the mic replaces typing, the dialog flow is unchanged.
-function onVoiceText(text) {
-  input.value = text
-  send()
-}
 
 async function send() {
   const text = input.value.trim()
@@ -392,21 +384,15 @@ async function submitTemplate() {
           </button>
         </view>
         <view class="inputbar">
-          <view class="mode" @click="inputMode = inputMode === 'voice' ? 'text' : 'voice'">
-            {{ inputMode === 'voice' ? '键盘' : '语音' }}
-          </view>
-          <VoicePad v-if="inputMode === 'voice'" :disabled="sending" @transcript="onVoiceText" />
-          <template v-else>
-            <textarea
-              v-model="input"
-              class="textarea chat-input"
-              auto-height
-              :disabled="sending"
-              placeholder="说说你的赛道、现状和目标…"
-              @confirm="send"
-            />
-            <button class="btn send" :disabled="sending || !input.trim()" @click="send">{{ sending ? '…' : '发送' }}</button>
-          </template>
+          <textarea
+            v-model="input"
+            class="textarea chat-input"
+            auto-height
+            :disabled="sending"
+            placeholder="说说你的赛道、现状和目标…"
+            @confirm="send"
+          />
+          <button class="btn send" :disabled="sending || !input.trim()" @click="send">{{ sending ? '…' : '发送' }}</button>
         </view>
       </template>
     </view>
@@ -515,19 +501,5 @@ async function submitTemplate() {
   line-height: 40px;
   font-size: 14px;
   flex-shrink: 0;
-}
-.mode {
-  width: 46px;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  font-size: 13px;
-  color: #666;
-  border-radius: 8px;
-  flex-shrink: 0;
-  margin: 0 8px 0 0;
-}
-.mode:active {
-  background: #f2f3f5;
 }
 </style>

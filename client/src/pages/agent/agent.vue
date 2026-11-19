@@ -3,7 +3,6 @@ import { onShow } from '@dcloudio/uni-app'
 import { nextTick, ref } from 'vue'
 
 import { api, mdToHtml, requireLogin } from '../../api'
-import VoicePad from '../../components/VoicePad.vue'
 
 const personas = ref([])
 const idx = ref(0)
@@ -12,7 +11,6 @@ const input = ref('')
 const sending = ref(false)
 const status = ref(null)
 const scrollTo = ref('')
-const inputMode = ref('text') // text | voice, like WeChat's keyboard/mic toggle
 
 onShow(async () => {
   if (!requireLogin()) return
@@ -50,12 +48,6 @@ function scroll() {
 function openPersonas() {
   uni.navigateTo({ url: '/pages/persona/persona' })
 }
-
-// Speak -> transcript -> send, so the mic replaces typing rather than the AI call.
-function onVoiceText(text) {
-  input.value = text
-  send()
-}
 </script>
 
 <template>
@@ -83,14 +75,8 @@ function onVoiceText(text) {
     </scroll-view>
 
     <view class="bar">
-      <view class="mode" @click="inputMode = inputMode === 'voice' ? 'text' : 'voice'">
-        {{ inputMode === 'voice' ? '键盘' : '语音' }}
-      </view>
-      <VoicePad v-if="inputMode === 'voice'" :disabled="sending" @transcript="onVoiceText" />
-      <template v-else>
-        <input v-model="input" class="input" style="flex: 1; margin: 0" placeholder="输入你的问题" confirm-type="send" @confirm="send" />
-        <button class="btn btn-sm" :disabled="sending" @click="send">发送</button>
-      </template>
+      <input v-model="input" class="input" style="flex: 1; margin: 0" placeholder="输入你的问题" confirm-type="send" @confirm="send" />
+      <button class="btn btn-sm" :disabled="sending" @click="send">发送</button>
     </view>
   </view>
 </template>
@@ -104,6 +90,4 @@ function onVoiceText(text) {
 .msg.assistant { background: #fff; }
 .msg.error { background: #fde8ea; color: #d6213a; }
 .bar { display: flex; align-items: center; padding: 8px 12px; background: #fff; }
-.mode { width: 46px; height: 40px; line-height: 40px; text-align: center; font-size: 13px; color: #666; border-radius: 8px; flex-shrink: 0; margin-right: 8px; }
-.mode:active { background: #f2f3f5; }
 </style>
