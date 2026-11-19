@@ -120,7 +120,7 @@ async def my_tool(keyword: str) -> str:
     Args:
         keyword: 参数说明。
     """
-    return "结果"
+    return "结果1"
 
 TOOLS = [my_tool]
 ```
